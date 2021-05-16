@@ -9,7 +9,7 @@ public class AbstractController {
 
     public static Logger getLogger() {
         if (logger == null) {
-            // TODO temporário
+            // TODO temporário (injetar por dependencia e também trocar por um application logger)
             logger = ConsoleLogger.getLogger();
         }
         return logger;

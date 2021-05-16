@@ -1,18 +1,23 @@
-package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate;
+package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.factories;
 
 import dev.andersoncontreira.trainingddd.domain.entities.Entity;
 import dev.andersoncontreira.trainingddd.domain.enums.Timezones;
+import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
+//TODO implementar depois
+@org.springframework.context.annotation.Configuration
 public class SessionFactory {
     private static String HIBERNATE_PROPERTIES = "hibernate.properties";
     public static String PACKAGES_TO_SCAN = String.format("%s.entities",SessionFactory.class.getPackage().toString());
 
+    @Bean
     public static org.hibernate.SessionFactory factory(Configuration configuration, PersistenceConfiguration persistenceConfiguration) {
 
         Properties properties = generateHibernateProperties(persistenceConfiguration);

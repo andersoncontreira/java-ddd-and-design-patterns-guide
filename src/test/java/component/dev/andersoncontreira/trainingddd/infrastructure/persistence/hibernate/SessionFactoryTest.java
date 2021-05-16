@@ -1,43 +1,33 @@
-package unit.dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate;
+package component.dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate;
 
+import component.AbstractComponentTestCase;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.factories.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import unit.AbstractUnitTestCase;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
+class SessionFactoryTest extends AbstractComponentTestCase {
 
-/**
- * Test of SessionFactory for Database Connections
- */
-class SessionFactoryTest extends AbstractUnitTestCase {
+    @BeforeAll
+    static void setUpBeforeClass() {
+
+    }
 
     @BeforeEach
     void setUp() {
+    }
+
+    @AfterEach
+    void tearDown() {
     }
 
     @Test
     void factory() {
         Class<?> currentClass = new Object() {}.getClass();
         logger.info(String.format("Running test: %s::%s - %s", getClassName(currentClass), getMethodName(currentClass), null));
-
-        Configuration configuration = Mockito.mock(Configuration.class);
-        Mockito.when(configuration.buildSessionFactory())
-                .thenReturn(Mockito.mock(org.hibernate.SessionFactory.class));
-
-        PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration();
-        org.hibernate.SessionFactory sessionFactory = SessionFactory.factory(configuration, persistenceConfiguration);
-
-        assertThat(sessionFactory, instanceOf(org.hibernate.SessionFactory.class));
     }
 
     @Test
@@ -54,6 +44,4 @@ class SessionFactoryTest extends AbstractUnitTestCase {
 
         Assertions.assertTrue(properties.containsKey("hibernate.connection.password"));
     }
-
-
 }

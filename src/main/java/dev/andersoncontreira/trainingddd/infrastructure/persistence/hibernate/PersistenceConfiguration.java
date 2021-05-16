@@ -1,5 +1,7 @@
 package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate;
 
+import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
+
 public class PersistenceConfiguration {
     public String hostname = "localhost";
 
@@ -21,4 +23,24 @@ public class PersistenceConfiguration {
 
     public Boolean showSql = false;
 
+    public PersistenceConfiguration() {
+
+    }
+
+    public PersistenceConfiguration(Configuration configuration) {
+        populate(configuration);
+    }
+
+    public void populate(Configuration configuration) {
+        hostname = configuration.get("persistence.hostname");
+        username = configuration.get("persistence.username");
+        password = configuration.get("persistence.password");
+        database = configuration.get("persistence.database");
+        driver = configuration.get("persistence.driver");
+        manager = configuration.get("persistence.manager");
+        type = configuration.get("persistence.type");
+        poolSize = Integer.parseInt(configuration.get("persistence.poolSize"));
+        port = Integer.parseInt(configuration.get("persistence.port"));
+        showSql = Boolean.valueOf(configuration.get("persistence.showSql"));
+    }
 }

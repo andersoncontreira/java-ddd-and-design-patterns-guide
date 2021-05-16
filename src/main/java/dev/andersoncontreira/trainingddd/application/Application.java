@@ -1,6 +1,7 @@
 package dev.andersoncontreira.trainingddd.application;
 
 import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
+import dev.andersoncontreira.trainingddd.application.container.ApplicationContainer;
 import dev.andersoncontreira.trainingddd.application.enums.ApplicationMessages;
 import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
 import dev.andersoncontreira.trainingddd.application.handlers.http.HttpHandler;
@@ -108,6 +109,11 @@ public class Application {
         logger.info("-------------------------------------");
 
         logger.info("Container ...");
+        try {
+            ApplicationContainer.getInstance().boot();
+        } catch (ApplicationException exception) {
+            exit(exception);
+        }
 
         logger.info("Database ...");
     }
