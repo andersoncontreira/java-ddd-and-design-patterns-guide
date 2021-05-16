@@ -1,132 +1,93 @@
 plugins {
-    id 'java'
-    id 'java-library'
-    id 'org.springframework.boot' version '2.4.4'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    //    id 'org.jetbrains.kotlin.jvm' version '1.4.32-release-380'
+	id 'org.springframework.boot' version '2.4.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
 }
 
-group 'dev.andersoncontreira'
-version '1.0-SNAPSHOT'
+group = 'dev.andersoncontreira'
+version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0',
-            'org.springframework.boot:spring-boot-starter-test'
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+	implementation ('org.springframework.boot:spring-boot-starter-web') {
+		exclude module: 'spring-boot-starter-logging'
+	}
+	implementation 'com.google.code.gson:gson:2.8.5',
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+			// spark with pc4j security package
+			'org.pac4j:spark-pac4j:2.2.0',
 
-    compile ('org.springframework.boot:spring-boot-starter') {
-        exclude module: 'spring-boot-starter-logging'
-    }
-    compile ('org.springframework.boot:spring-boot-starter-web') {
-        exclude module: 'spring-boot-starter-logging'
-    }
+			//'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
 
+			//reflection
+			'org.reflections:reflections:0.9.11',
 
+			//logs
+			'org.slf4j:slf4j-api:1.7.25',
+			'org.slf4j:slf4j-simple:1.7.13',
 
+			// log appender
+			'org.eclipse.ecf:org.apache.log4j:1.2.15.v201012070815',
 
-            //Gson
-    compile  'com.google.code.gson:gson:2.8.5',
+			//log4j to json
+			'net.logstash.log4j:jsonevent-layout:1.7',
 
-            // spark with pc4j security package
-            'org.pac4j:spark-pac4j:2.2.0',
+			//hibernate
+			'org.hibernate:hibernate-core:5.3.2.Final',
 
-            //'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
+			//mysql connector
+			'mysql:mysql-connector-java:8.0.17',
 
-            //reflection
-            'org.reflections:reflections:0.9.11',
+			//javax.validation
+			'javax.validation:validation-api:2.0.1.Final',
+			// validator
+			'commons-validator:commons-validator:1.4.0',
 
-            //logs
-            'org.slf4j:slf4j-api:1.7.25',
-            'org.slf4j:slf4j-simple:1.7.13',
+			// Object Utils
+			'org.apache.commons:commons-lang3:3.4',
+			// File Filter
+			'org.apache.commons:commons-io:1.3.2'
 
-            // log appender
-            'org.eclipse.ecf:org.apache.log4j:1.2.15.v201012070815',
-
-            //log4j to json
-            'net.logstash.log4j:jsonevent-layout:1.7',
-
-            //hibernate
-            'org.hibernate:hibernate-core:5.3.2.Final',
-
-            //mysql connector
-            'mysql:mysql-connector-java:8.0.17',
-
-            //javax.validation
-            'javax.validation:validation-api:2.0.1.Final',
-            // validator
-            'commons-validator:commons-validator:1.4.0',
-
-            // Object Utils
-            'org.apache.commons:commons-lang3:3.4',
-            // File Filter
-            'org.apache.commons:commons-io:1.3.2'
-
-
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
-//compileKotlin {
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
-//}
-//compileTestKotlin {
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
-//}
+jar {
+	enabled = true
+	manifest {
+		attributes "Main-Class": "dev.andersoncontreira.trainingddd.application.Application"
+	}
 
-//create jar for the source
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    //baseName = project.name.replace(version,"") + '-full'
-    archiveName = 'training-full.jar'
-//    mainClassName = 'dev.andersoncontreira.trainingddd.application.Application'
+	configurations.implementation.setCanBeResolved(true)
+	from {
+		configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+	}
 
-    manifest {
-        attributes 'Implementation-Title': ' Training',
-                'Implementation-Version': version,
-                'Main-Class': 'dev.andersoncontreira.trainingddd.application.Application'
-    }
+	exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA BOOT-INF/*.*'
 
-    doFirst {
-        from {
-            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-        }
-    }
-
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-
-    with jar
 }
-
+/**
+ * Depends of jar to build a complete file
+ * TODO Está duplicando as dependencias
+ */
 bootJar {
-    mainClassName = 'dev.andersoncontreira.trainingddd.application.Application'
+	enabled = true
+	mainClass = 'dev.andersoncontreira.trainingddd.application.Application'
+	with jar
 }
 
-//Atualizar
-//https://discuss.gradle.org/t/need-help-with-building-an-executable-jar-that-can-be-published-to-maven-local-repo-with-publishtomavenlocal-spring-boot-project/35829
-//create jar for the doc
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+bootRun {
+	optimizedLaunch = false
 }
