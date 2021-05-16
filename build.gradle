@@ -30,10 +30,16 @@ dependencies {
         exclude module: 'spring-boot-starter-logging'
     }
 
-//            'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
+
+
 
             //Gson
     compile  'com.google.code.gson:gson:2.8.5',
+
+            // spark with pc4j security package
+            'org.pac4j:spark-pac4j:2.2.0',
+
+            //'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
 
             //logs
             'org.slf4j:slf4j-api:1.7.25',

@@ -3,7 +3,6 @@ package dev.andersoncontreira.trainingddd.application;
 import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
 import dev.andersoncontreira.trainingddd.application.enums.ApplicationMessages;
 import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
-import dev.andersoncontreira.trainingddd.application.handlers.Handler;
 import dev.andersoncontreira.trainingddd.application.handlers.http.HttpHandler;
 import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import org.apache.log4j.Logger;
@@ -119,7 +118,7 @@ public class Application {
      */
     private void run(String[] args) {
         if (MODE.equals(HTTP_MODE)) {
-            Handler handler = new HttpHandler(configuration);
+            HttpHandler handler = new HttpHandler(configuration, logger);
             handler.run(Application.class, args);
         } else {
             exit(new ApplicationException(ApplicationMessages.NOT_IMPLEMENTED_YET));

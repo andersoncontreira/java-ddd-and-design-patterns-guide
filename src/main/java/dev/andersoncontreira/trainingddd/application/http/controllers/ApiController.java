@@ -1,5 +1,7 @@
 package dev.andersoncontreira.trainingddd.application.http.controllers;
 
+import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
+import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +18,12 @@ public class ApiController extends AbstractController {
     public static Map<String, ?> index() {
           HashMap<String, String> body = new HashMap<>();
           body.put("app", String.format("%s:%s", APP_NAME, APP_VERSION));
-          return body;
+        try {
+            body.put("server", Configuration.getConfiguration().get("server.type"));
+        } catch (ApplicationException exception) {
+            exception.printStackTrace();
+        }
+        return body;
           //https://stackoverflow.com/questions/64735088/how-to-return-json-response-in-springboot
           //TODO temporário
 //          JsonTransformer transformer = new JsonTransformer();
@@ -37,4 +44,13 @@ public class ApiController extends AbstractController {
 //
 //        return apiResponse.json();
 //    }
+
+      public static Map<String, ?> alive() {
+          HashMap<String, String> body = new HashMap<>();
+          body.put("alive", "I am alive");
+          return body;
+
+      }
+
+
 }
