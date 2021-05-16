@@ -4,11 +4,10 @@ import dev.andersoncontreira.trainingddd.application.configuration.Configuration
 import dev.andersoncontreira.trainingddd.application.handlers.Handler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import java.util.Properties;
 
-public class HttpHandler extends SpringBootServletInitializer implements Handler {
+public class HttpHandler implements Handler {
 
     private final Configuration configuration;
 
