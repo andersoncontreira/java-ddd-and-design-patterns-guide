@@ -1,0 +1,59 @@
+version: "3.2"
+services:
+  training-ddd-and-design-patterns-java:
+    container_name: training-ddd-and-design-patterns-java
+    build:
+      context: .
+      dockerfile: ./docker/java/Dockerfile
+    privileged: true
+    environment:
+      # Fake credentials for Localstack
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    ports:
+      - 8080:8080
+    networks:
+      - default
+    volumes:
+      - ./:/app
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "MySql2019!"
+      MYSQL_DATABASE: "northwind"
+    ports:
+      - 3306:3306
+    networks:
+      - default
+    logging:
+      driver: none
+#  redis:
+#    image: "redis:alpine"
+#    ports:
+#      - 6379:6379
+#    expose:
+#      - 6379
+#    networks:
+#      - default
+##  localstack:
+#    image: localstack/localstack
+#    privileged: true
+#    ports:
+#      - "4566:4566"
+#      - "4567-4582:4567-4582"
+#      - "9070:9070"
+#    environment:
+#      SERVICES: sqs,lambda,cloudwatch
+#      DOCKER_HOST: unix:///var/run/docker.sock
+#      PORT_WEB_UI: 9070
+#      LAMBDA_EXECUTOR: docker
+#      DEBUG: 1
+#      HOSTNAME_EXTERNAL: localstack
+#    networks:
+#      - default
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - /tmp/localstack:/tmp/localstack
+#networks:
+#  default:
+#    external: true

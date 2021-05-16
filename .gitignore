@@ -1,0 +1,25 @@
+# Gradle
+.gradle
+build/
+gradle.properties
+?/
+
+# IntelliJ project files
+.idea
+.idea*
+*.iml
+out
+gen
+
+# root config
+/properties.json
+
+# target
+/target
+
+# jar folder
+jar/*.jar
+jar/*.json
+
+# jar
+jar/logs

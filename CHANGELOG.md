@@ -1,0 +1,1 @@
+# Training DDD and Design Patterns in Java - Changelog
