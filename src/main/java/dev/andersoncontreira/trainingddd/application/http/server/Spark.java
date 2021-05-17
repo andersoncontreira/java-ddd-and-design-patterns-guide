@@ -18,6 +18,9 @@ public class Spark implements Server {
         int port = Integer.parseInt(configuration.get("server.port"));
         logger.info("Initializing the server");
         logger.info(String.format("port: %d", port));
+
+        spark.Spark.staticFiles.location("/public");
+
         spark.Spark.port(port);
 
         routes();

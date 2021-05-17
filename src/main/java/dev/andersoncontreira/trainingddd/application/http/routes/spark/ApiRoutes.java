@@ -2,6 +2,7 @@ package dev.andersoncontreira.trainingddd.application.http.routes.spark;
 
 import dev.andersoncontreira.trainingddd.application.http.controllers.ApiController;
 import dev.andersoncontreira.trainingddd.application.http.transformers.JsonTransformer;
+import spark.Spark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class ApiRoutes {
             response.type("application/json");
             return ApiController.alive();
         }, transformer::transform);
+
+        routes.add("GET /docs");
+        Spark.redirect.get("/docs", "/docs/index.html");
+        Spark.redirect.get("/docs/", "/docs/index.html");
 
     }
 }

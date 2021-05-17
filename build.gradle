@@ -21,6 +21,10 @@ dependencies {
 	implementation ('org.springframework.boot:spring-boot-starter-web') {
 		exclude module: 'spring-boot-starter-logging'
 	}
+	implementation('org.springframework.boot:spring-boot-starter-thymeleaf') {
+		exclude module: 'spring-boot-starter-logging'
+	}
+
 	implementation 'com.google.code.gson:gson:2.8.5',
 
 			// spark with pc4j security package

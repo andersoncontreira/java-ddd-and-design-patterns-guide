@@ -2,6 +2,7 @@ package dev.andersoncontreira.trainingddd.application.http.controllers;
 
 import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
 import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +46,7 @@ public class ApiController extends AbstractController {
 //        return apiResponse.json();
 //    }
 
+      @GetMapping("/alive")
       public static Map<String, ?> alive() {
           HashMap<String, String> body = new HashMap<>();
           body.put("alive", "I am alive");
