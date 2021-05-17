@@ -12,8 +12,17 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
+ext {
+	String testType = "unit"
+}
+
 repositories {
 	mavenCentral()
+}
+
+// A resolvable configuration to collect test reports data
+configurations {
+	antJUnit
 }
 
 dependencies {
@@ -62,10 +71,108 @@ dependencies {
 			'org.apache.commons:commons-io:1.3.2'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	antJUnit 'org.apache.ant:ant-junit:1.9.7'
 }
 
 test {
 	useJUnitPlatform()
+}
+
+tasks.register('unitTestReport', TestReport) {
+	def testType = "unit"
+	// html reports
+	reporting.baseDir = "$buildDir/target/" + testType
+
+
+	dependsOn tasks.test {
+		filter {
+			includeTestsMatching testType + ".*"
+		}
+
+		reports {
+			html.enabled = true
+			junitXml.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()))
+			html.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()+"/coverage_html"))
+//			print(html.outputLocation.get())
+		}
+
+		doLast {
+			ant.taskdef(name: 'junitreport',
+					classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+					classpath: configurations.antJUnit.asPath)
+
+			ant.junitreport(todir: reporting.baseDir, tofile: "report.xml") {
+				fileset(dir: reporting.baseDir, includes: 'TEST-*.xml')
+				//report(todir: file(reporting.baseDir.toString() + "/report"), format: 'frames')
+			}
+		}
+	}
+}
+
+//TODO estudar forma para não repetir logica
+tasks.register('componentTestReport', TestReport) {
+	def testType = "component"
+	// html reports
+	reporting.baseDir = "$buildDir/target/" + testType
+
+
+	dependsOn tasks.test {
+		filter {
+			includeTestsMatching testType + ".*"
+		}
+
+		reports {
+			html.enabled = true
+			junitXml.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()))
+			html.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()+"/coverage_html"))
+//			print(html.outputLocation.get())
+		}
+
+		doLast {
+			ant.taskdef(name: 'junitreport',
+					classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+					classpath: configurations.antJUnit.asPath)
+
+			ant.junitreport(todir: reporting.baseDir, tofile: "report.xml") {
+				fileset(dir: reporting.baseDir, includes: 'TEST-*.xml')
+				//report(todir: file(reporting.baseDir.toString() + "/report"), format: 'frames')
+			}
+		}
+	}
+}
+
+
+//TODO estudar forma para não repetir logica
+tasks.register('integrationTestReport', TestReport) {
+	def testType = "integration"
+	// html reports
+	reporting.baseDir = "$buildDir/target/" + testType
+
+
+	dependsOn tasks.test {
+		filter {
+			includeTestsMatching testType + ".*"
+		}
+
+		reports {
+			html.enabled = true
+			junitXml.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()))
+			html.outputLocation.set(layout.buildDirectory.dir(reporting.baseDir.toString()+"/coverage_html"))
+//			print(html.outputLocation.get())
+		}
+
+		doLast {
+			ant.taskdef(name: 'junitreport',
+					classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
+					classpath: configurations.antJUnit.asPath)
+
+			ant.junitreport(todir: reporting.baseDir, tofile: "report.xml") {
+				fileset(dir: reporting.baseDir, includes: 'TEST-*.xml')
+				//report(todir: file(reporting.baseDir.toString() + "/report"), format: 'frames')
+			}
+		}
+	}
 }
 
 jar {

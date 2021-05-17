@@ -139,7 +139,7 @@ components:
       - limit
       type: object
 info:
-  title: sourcing-service-events-api
+  title: training-ddd-and-design-patterns-java
   version: 1.0.0
 openapi: 3.0.2
 paths:
@@ -153,54 +153,6 @@ paths:
                 $ref: '#/components/schemas/Alive'
           description: Success response
       summary: Service Health Method
-  /v1/event/{event_type}:
-    get:
-      parameters:
-      - description: Event type
-        in: path
-        name: event_type
-        required: true
-        schema:
-          example: sale-event
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventListResponse'
-          description: Success response
-      summary: List event by event type
-    post:
-      parameters:
-      - description: Event type
-        in: path
-        name: event_type
-        required: true
-        schema:
-          example: sale-event
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventCreateRequest'
-        description: Event to be created
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventCreateResponse'
-        4xx:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventCreateErrorResponse'
-      summary: Create event
 servers:
-- description: Staging server
-  url: https://sourcing-service-events-api.redekasa.com
 - description: Development server
-  url: http://localhost:5000
+  url: http://localhost:8080
