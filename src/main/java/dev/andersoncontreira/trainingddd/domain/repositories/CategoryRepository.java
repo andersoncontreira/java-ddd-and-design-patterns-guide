@@ -4,8 +4,16 @@ import dev.andersoncontreira.trainingddd.domain.entities.Category;
 
 import java.util.List;
 
-public class CategoryRepository {
-    public List<Category> list() {
-        return null;
-    }
+public interface CategoryRepository {
+
+    Category find(int id);
+
+    List<Category> list();
+
+    boolean create();
+
+    boolean update();
+
+    boolean deleted();
+
 }

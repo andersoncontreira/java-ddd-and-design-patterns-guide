@@ -4,6 +4,7 @@ import dev.andersoncontreira.trainingddd.application.events.listeners.Applicatio
 import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
 import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
+import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.factories.SessionFactory;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -13,9 +14,11 @@ import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Repository;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Application Container
@@ -24,6 +27,7 @@ public class ApplicationContainer {
 
     private static ApplicationContainer instance;
     private static boolean booted = false;
+    private static int refreshCounter = 0;
 
     private final AnnotationConfigApplicationContext context;
     private final DefaultListableBeanFactory beanFactory;
@@ -54,26 +58,48 @@ public class ApplicationContainer {
          * Basic Configurations
          */
         bootConfigurations();
+        //refresh();
+        //waitRefresh(1000);
 
         /**
          * @Configuration Classes
          */
-        Set<Class<?>> classList = getAnnotatedClassList(Configuration.class);
+        bootAnnotatedClasses(Configuration.class);
+        //refresh(3000);
+        //waitRefresh();
 
-        logger.info("Registering Configuration classes");
-        for (Class<?> configClass : classList) {
-            logger.debug(String.format("Registering ... %s", configClass.getName()));
+        /**
+         * @Repository Classes
+         */
+        bootAnnotatedClasses(Repository.class);
+        //refresh(3000);
+        //refresh();
 
-            context.register(configClass);
-
-        }
-
-
-        refresh(3000);
-
+        refresh();
+        waitRefresh(3000);
         booted = true;
 
     }
+
+
+
+    private void bootAnnotatedClasses(final Class<? extends Annotation> annotation) {
+        Set<Class<?>> classList = getAnnotatedClassList(annotation);
+
+        logger.info(String.format("Registering %s classes", annotation.getSimpleName()));
+        for (Class<?> configClass : classList) {
+            logger.debug(String.format("Registering ... %s", configClass.getName()));
+            try {
+                context.register(configClass);
+            } catch (Exception exception) {
+                logger.error(exception);
+            }
+
+        }
+
+        //refresh();
+    }
+
 
     private void bootConfigurations() throws ApplicationException {
         dev.andersoncontreira.trainingddd.application.configuration.Configuration configuration =
@@ -89,12 +115,14 @@ public class ApplicationContainer {
         beanFactory.registerSingleton(PersistenceConfiguration.class.getName(), persistenceConfiguration);
 
         logger.info("Configurations registered");
-
-
-//        SessionFactory sessionFactory = new SessionFactory(persistenceConfiguration);
-//        beanFactory.registerSingleton(sessionFactory.getClass().getName(), sessionFactory);
-
-//        refresh();
+        try {
+            org.hibernate.SessionFactory sessionFactory = new SessionFactory(persistenceConfiguration).factory();
+            beanFactory.registerSingleton(org.hibernate.SessionFactory.class.getName(), sessionFactory);
+            logger.info("SessionFactory registered");
+        } catch(Exception exception) {
+            logger.error("Database exception");
+            logger.error(exception);
+        }
 
     }
 
@@ -150,14 +178,26 @@ public class ApplicationContainer {
     public void refresh(long sleepTime) {
         try {
             if (!isRefreshing) {
-                logger.info("Refreshing context");
+                logger.info("Refreshing context...");
                 isRefreshing = true;
+                refreshCounter = 0;
                 context.refresh();
-                Thread.sleep(sleepTime);
+//                logger.info(String.format("waiting... %s", sleepTime));
+                //Thread.sleep(sleepTime);
+                TimeUnit.MILLISECONDS.sleep(sleepTime);
             }
         } catch (Exception exception) {
-//            isRefreshing = true;
+            isRefreshing = false;
             logger.error(exception);
+        }
+    }
+
+    private void waitRefresh(int timeout) {
+        try {
+            logger.info(String.format("waitRefresh: %s", timeout));
+            TimeUnit.MILLISECONDS.sleep(timeout);
+        } catch (Exception e) {
+            logger.error(e);
         }
     }
 
@@ -166,6 +206,7 @@ public class ApplicationContainer {
     }
 
     public void setRefreshing(boolean refreshing) {
+        logger.info(String.format("setRefreshing: %s", refreshing));
         isRefreshing = refreshing;
     }
 

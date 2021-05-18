@@ -1,5 +1,7 @@
 package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.factories;
 
+import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
+import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
 
 /**
@@ -8,10 +10,16 @@ import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.Pe
 
 public class PersistenceConfigurationFactory {
 
-    private dev.andersoncontreira.trainingddd.application.configuration.Configuration configuration;
+    private Configuration configuration;
 
+    public PersistenceConfigurationFactory(Configuration configuration) throws ApplicationException {
+        this.configuration = configuration;
+    }
+    public PersistenceConfigurationFactory() throws ApplicationException {
+        this.configuration = Configuration.getConfiguration();
+    }
 
-    public void setConfiguration(dev.andersoncontreira.trainingddd.application.configuration.Configuration configuration) {
+    public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
 

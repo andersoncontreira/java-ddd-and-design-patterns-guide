@@ -1,5 +1,6 @@
 # Training DDD and Design Patterns in Java
-DDD and design patterns sample in Java
+DDD and design patterns sample in Java.
+Hybrid project to run SpringBoot our Spark.
 
 ## Service Architecture
 This service is the main part of the follow architecture.
@@ -33,6 +34,16 @@ All the changes must be tracked in [CHANGELOG.md](CHANGELOG.md)
 - Spark Support
 
 ## Installation
+
+### Installing Java
+To describe...
+
+### Configuring the server type
+Edit the `development.properties` file.
+
+Set `server.type=SpringBoot` to run with SpringBoot. 
+
+Set `server.type=Spark` to run with Spark.
 
 ### Running Locally
 Execute the follow command:

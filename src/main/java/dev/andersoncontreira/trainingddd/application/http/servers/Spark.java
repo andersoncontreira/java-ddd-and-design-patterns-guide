@@ -1,4 +1,4 @@
-package dev.andersoncontreira.trainingddd.application.http.server;
+package dev.andersoncontreira.trainingddd.application.http.servers;
 
 import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
 import dev.andersoncontreira.trainingddd.application.http.routes.spark.ApiRoutes;

@@ -3,9 +3,9 @@ package dev.andersoncontreira.trainingddd.application.handlers.http;
 import dev.andersoncontreira.trainingddd.application.configuration.Configuration;
 import dev.andersoncontreira.trainingddd.application.enums.ServerType;
 import dev.andersoncontreira.trainingddd.application.handlers.Handler;
-import dev.andersoncontreira.trainingddd.application.http.server.Server;
-import dev.andersoncontreira.trainingddd.application.http.server.Spark;
-import dev.andersoncontreira.trainingddd.application.http.server.SpringBoot;
+import dev.andersoncontreira.trainingddd.application.http.servers.Server;
+import dev.andersoncontreira.trainingddd.application.http.servers.Spark;
+import dev.andersoncontreira.trainingddd.application.http.servers.SpringBoot;
 import org.apache.log4j.Logger;
 
 public class HttpHandler implements Handler {

@@ -10,7 +10,7 @@ public class Category {
     public String categoryName;
     public String description;
     public Blob picture;
-    public String categoryID;
+    public Integer categoryID;
 
     public Set<Product> products;
 
@@ -18,7 +18,7 @@ public class Category {
         products = new HashSet<>();
     }
 
-    public Category(Long id, String categoryName, String description, Blob picture, String categoryID) {
+    public Category(Long id, String categoryName, String description, Blob picture, Integer categoryID) {
         this.id = id;
         this.categoryName = categoryName;
         this.description = description;
@@ -63,11 +63,11 @@ public class Category {
         return this;
     }
 
-    public String getCategoryID() {
+    public Integer getCategoryID() {
         return categoryID;
     }
 
-    public Category setCategoryID(String categoryID) {
+    public Category setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
         return this;
     }

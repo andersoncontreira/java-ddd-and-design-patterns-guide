@@ -45,7 +45,7 @@ public class ObjectUtils {
         System.out.println(object2String(object, ToStringStyle.JSON_STYLE));
     }
 
-    public void setTimeout(Runnable runnable, int delay){
+    public static void setTimeout(Runnable runnable, int delay){
         new Thread(() -> {
             try {
                 Thread.sleep(delay);

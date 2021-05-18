@@ -111,7 +111,9 @@ public class Application {
 
         logger.info("Container ...");
         try {
-            ApplicationContainer.getInstance().boot();
+            ApplicationContainer container = ApplicationContainer.getInstance();
+            container.boot();
+            //container.refresh(3000);
         } catch (ApplicationException exception) {
             exit(exception);
         }

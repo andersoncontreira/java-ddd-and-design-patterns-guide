@@ -19,4 +19,8 @@ public class CategoryService {
 
         return repository.list();
     }
+
+    public Category find(int id) {
+        return repository.find(id);
+    }
 }

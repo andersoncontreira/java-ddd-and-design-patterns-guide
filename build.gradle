@@ -56,7 +56,7 @@ dependencies {
 
 			//hibernate
 			'org.hibernate:hibernate-core:5.4.31.Final',
-			//hbm.xml
+			//how-to-resolve-java-lang-noclassdeffounderror-javax-xml-bind-jaxbexception
 			'javax.xml.bind:jaxb-api:2.3.1',
 			//could-not-get-constructor-for-org-hibernate-persister-entity-singletableentitype
 			'org.javassist:javassist:3.25.0-GA',

@@ -6,7 +6,6 @@ import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -16,7 +15,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-@org.springframework.context.annotation.Configuration
+//@org.springframework.context.annotation.Configuration
 public class SessionFactory {
     private static String HIBERNATE_PROPERTIES = "hibernate.properties";
     public static String PACKAGES_TO_SCAN = "dev.andersoncontreira.trainingddd.domain.entities";
@@ -32,7 +31,7 @@ public class SessionFactory {
         this.persistenceConfiguration = persistenceConfiguration;
     }
 
-    @Autowired
+//    @Autowired
     public SessionFactory(PersistenceConfiguration persistenceConfiguration) {
         this.configuration = new Configuration();
         this.persistenceConfiguration = persistenceConfiguration;
