@@ -1,5 +1,6 @@
 package dev.andersoncontreira.trainingddd.application.container;
 
+import dev.andersoncontreira.trainingddd.application.events.listeners.ApplicationContainerEventListener;
 import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationException;
 import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
@@ -27,10 +28,13 @@ public class ApplicationContainer {
     private final AnnotationConfigApplicationContext context;
     private final DefaultListableBeanFactory beanFactory;
     private final Logger logger;
+    private boolean isRefreshing = false;
 
     private ApplicationContainer() {
         beanFactory = new DefaultListableBeanFactory();
         context = new AnnotationConfigApplicationContext(beanFactory);
+        context.addApplicationListener(new ApplicationContainerEventListener());
+
         logger = ConsoleLogger.getLogger();
     }
 
@@ -47,13 +51,10 @@ public class ApplicationContainer {
 
     public void boot() throws ApplicationException {
         /**
-         * Register log
-         */
-        beanFactory.registerSingleton(Logger.class.getName(), logger);
-        /**
          * Basic Configurations
          */
         bootConfigurations();
+
         /**
          * @Configuration Classes
          */
@@ -64,16 +65,11 @@ public class ApplicationContainer {
             logger.debug(String.format("Registering ... %s", configClass.getName()));
 
             context.register(configClass);
-        }
 
-        try {
-            refresh();
-        } catch (Exception exception) {
-            logger.error(exception);
         }
 
 
-
+        refresh(3000);
 
         booted = true;
 
@@ -91,6 +87,12 @@ public class ApplicationContainer {
          */
         PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration(configuration);
         beanFactory.registerSingleton(PersistenceConfiguration.class.getName(), persistenceConfiguration);
+
+        logger.info("Configurations registered");
+
+
+//        SessionFactory sessionFactory = new SessionFactory(persistenceConfiguration);
+//        beanFactory.registerSingleton(sessionFactory.getClass().getName(), sessionFactory);
 
 //        refresh();
 
@@ -142,10 +144,29 @@ public class ApplicationContainer {
     }
 
     public void refresh() {
+        refresh(0);
+    }
+
+    public void refresh(long sleepTime) {
         try {
-            context.refresh();
+            if (!isRefreshing) {
+                logger.info("Refreshing context");
+                isRefreshing = true;
+                context.refresh();
+                Thread.sleep(sleepTime);
+            }
         } catch (Exception exception) {
-//            logger.error(exception);
+//            isRefreshing = true;
+            logger.error(exception);
         }
     }
+
+    public boolean isRefreshing() {
+        return isRefreshing;
+    }
+
+    public void setRefreshing(boolean refreshing) {
+        isRefreshing = refreshing;
+    }
+
 }

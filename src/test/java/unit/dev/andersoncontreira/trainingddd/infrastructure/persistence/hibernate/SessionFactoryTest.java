@@ -35,7 +35,7 @@ class SessionFactoryTest extends AbstractUnitTestCase {
                 .thenReturn(Mockito.mock(org.hibernate.SessionFactory.class));
 
         PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration();
-        org.hibernate.SessionFactory sessionFactory = SessionFactory.factory(configuration, persistenceConfiguration);
+        org.hibernate.SessionFactory sessionFactory = new SessionFactory(configuration, persistenceConfiguration).factory();
 
         assertThat(sessionFactory, instanceOf(org.hibernate.SessionFactory.class));
     }

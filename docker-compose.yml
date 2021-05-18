@@ -13,7 +13,7 @@ services:
     ports:
       - 8080:8080
     networks:
-      - default
+      - training
     volumes:
       - ./:/app
   mysql:
@@ -25,8 +25,8 @@ services:
       - 3306:3306
     networks:
       - default
-    logging:
-      driver: none
+#    logging:
+#      driver: none
 #  redis:
 #    image: "redis:alpine"
 #    ports:
@@ -34,7 +34,7 @@ services:
 #    expose:
 #      - 6379
 #    networks:
-#      - default
+#      - training
 ##  localstack:
 #    image: localstack/localstack
 #    privileged: true
@@ -50,10 +50,10 @@ services:
 #      DEBUG: 1
 #      HOSTNAME_EXTERNAL: localstack
 #    networks:
-#      - default
+#      - training
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #      - /tmp/localstack:/tmp/localstack
-#networks:
-#  default:
-#    external: true
+networks:
+  training:
+    external: true

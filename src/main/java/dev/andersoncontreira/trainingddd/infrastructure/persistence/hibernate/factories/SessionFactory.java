@@ -2,23 +2,50 @@ package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.f
 
 import dev.andersoncontreira.trainingddd.domain.entities.Entity;
 import dev.andersoncontreira.trainingddd.domain.enums.Timezones;
+import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.PersistenceConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-//TODO implementar depois
 @org.springframework.context.annotation.Configuration
 public class SessionFactory {
     private static String HIBERNATE_PROPERTIES = "hibernate.properties";
-    public static String PACKAGES_TO_SCAN = String.format("%s.entities",SessionFactory.class.getPackage().toString());
+    public static String PACKAGES_TO_SCAN = "dev.andersoncontreira.trainingddd.domain.entities";
+    public static int MODE_SCAN = 1;
+    public static int MODE_MAP = 2;
+    public static int MODE = MODE_MAP;
+
+    private PersistenceConfiguration persistenceConfiguration;
+    private Configuration configuration;
+
+    public SessionFactory(Configuration configuration, PersistenceConfiguration persistenceConfiguration) {
+        this.configuration = configuration;
+        this.persistenceConfiguration = persistenceConfiguration;
+    }
+
+    @Autowired
+    public SessionFactory(PersistenceConfiguration persistenceConfiguration) {
+        this.configuration = new Configuration();
+        this.persistenceConfiguration = persistenceConfiguration;
+    }
+
+    public SessionFactory() {
+        this.configuration = new Configuration();
+        this.persistenceConfiguration = new PersistenceConfiguration();
+    }
+
 
     @Bean
-    public static org.hibernate.SessionFactory factory(Configuration configuration, PersistenceConfiguration persistenceConfiguration) {
+    public org.hibernate.SessionFactory factory() {
 
         Properties properties = generateHibernateProperties(persistenceConfiguration);
 
@@ -27,17 +54,23 @@ public class SessionFactory {
         /**
          * Read the packages and register the classes
          */
-        configuration.addPackage(PACKAGES_TO_SCAN);
-
-        registerEntities(configuration);
+        if (MODE == MODE_SCAN) {
+            configuration.addPackage(PACKAGES_TO_SCAN);
+            registerEntities(configuration);
+        } else {
+            Resource[] resources = getEntitiesByMapping();
+            for (Resource resource: resources) {
+                try {
+                    configuration.addFile(resource.getFile());
+                } catch (IOException e) {
+                    ConsoleLogger.getLogger().error(e);
+                }
+            }
+        }
 
         return configuration.buildSessionFactory();
     }
 
-    public static org.hibernate.SessionFactory factory(PersistenceConfiguration persistenceConfiguration) {
-        Configuration configuration = new Configuration();
-        return factory(configuration, persistenceConfiguration);
-    }
 
     protected static Properties generateHibernateProperties(PersistenceConfiguration persistenceConfiguration) {
         Properties properties = new  Properties();
@@ -58,9 +91,6 @@ public class SessionFactory {
         properties.setProperty("hibernate.connection.url", connectionUrl);
         properties.setProperty("hibernate.connection.pool_size",
                 String.valueOf(persistenceConfiguration.poolSize));
-
-        properties.setProperty("packagesToScan", PACKAGES_TO_SCAN);
-
         properties.setProperty("hibernate.dialect", getHibernateDialect(type));
         properties.setProperty("hibernate.jdbc.time_zone", Timezones.TZ_AMERICA_SAO_PAULO.getValue());
         properties.setProperty("hibernate.connection.driver_class", getHibernateDriverClass(type, driver));
@@ -70,6 +100,13 @@ public class SessionFactory {
          * Locks timeouts 10s
          */
         properties.setProperty("javax.persistence.lock.timeout", "10000");// in miliseconds
+        /**
+         * Scan entities
+         */
+        if (MODE == MODE_SCAN) {
+            properties.setProperty("packagesToScan", PACKAGES_TO_SCAN);
+        }
+
         return properties;
     }
 
@@ -118,6 +155,10 @@ public class SessionFactory {
         return driver;
     }
 
+    /**
+     * Get entities by annotation
+     * @return
+     */
     private static Set<Class<? extends Entity>> getEntities() {
 
 
@@ -125,6 +166,21 @@ public class SessionFactory {
 
         return reflections.getSubTypesOf(Entity.class);
 
+    }
+
+
+    private static Resource[] getEntitiesByMapping() {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = new Resource[]{};
+
+        try {
+            resources = resolver.getResources("classpath:/dev/andersoncontreira/infrastructure/persistence/hibernate/*.hbm.xml");
+        } catch (IOException e) {
+            //TODO tratar logger
+            e.printStackTrace();
+        }
+
+        return resources;
     }
 
     private static void registerEntities(Configuration configuration) {

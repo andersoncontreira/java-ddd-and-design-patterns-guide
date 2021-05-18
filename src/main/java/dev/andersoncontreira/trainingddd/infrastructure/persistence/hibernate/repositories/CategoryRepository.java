@@ -1,7 +1,7 @@
 package dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.repositories;
 
 
-import dev.andersoncontreira.trainingddd.infrastructure.persistence.hibernate.entities.Category;
+import dev.andersoncontreira.trainingddd.domain.entities.Category;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

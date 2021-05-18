@@ -7,6 +7,7 @@ import dev.andersoncontreira.trainingddd.application.exceptions.ApplicationExcep
 import dev.andersoncontreira.trainingddd.application.handlers.http.HttpHandler;
 import dev.andersoncontreira.trainingddd.infrastructure.logger.ConsoleLogger;
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -116,6 +117,7 @@ public class Application {
         }
 
         logger.info("Database ...");
+        ApplicationContainer.getInstance().getBean(SessionFactory.class);
     }
 
     /**
